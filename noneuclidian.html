@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>chat</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="jquery.js"></script>
+	<script type="text/javascript" src="paper-full.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	
+</head>
+
+
+<body>
+	
+	<canvas id="canvas" resize></canvas>
+	<script type="text/javascript">
+		var littleworld;
+		paper.install(window);
+		window.onload = function() {
+		var canvas = document.getElementById('canvas');
+		canvas.width  = window.innerWidth;
+		canvas.height = window.innerHeight
+		paper.setup(canvas);
+		view.translate(view.center);
+		var tool = new Tool();
+		var socket = io(location.pathname);
+		socket.on('connect', function (ok) {
+			//receive data about other niceLittlePoints (position, color)
+		});
+
+		
+		tool.onKeyDown = function(event) {
+			socket.emit("keydown", {key: event.key});
+	    	return false;
+		}
+		tool.onKeyUp = function(event){
+			socket.emit("keyup", {key: event.key});
+	    	return false;
+		}
+
+		socket.on('update', function(message){
+
+			console.log(message.updateposition);
+			
+			littleworld.get(message.socketid).position = new Point(message.updateposition);
+			littleworld.get(message.socketid).vitesse = new Point(message.updatespeed); 
+			//console.log(littleworld);
+
+		})
+		socket.on('welcomeHereIsTheCurrentStateOfTheWorld', function(message){
+			console.log(message);
+			littleworld = new Map(message.littleworld);
+			//console.log(littleworld);
+			for (var aNLP of littleworld.values()) {
+				aNLP.position = new Point(aNLP.position);
+				aNLP.vitesse = new Point(aNLP.vitesse);
+				aNLP.pathCircle = new Path.Circle(aNLP.position, aNLP.size);
+				aNLP.pathCircle.fillColor = aNLP.color;
+
+				aNLP.getposition = function(){ 
+					var t = Date.now();  
+					var dT = t - this.dT;
+					//console.log(dT);
+					this.position.x = Math.cos(180*this.vitesse.angle/3.14)*this.vitesse.length*dT + this.position.x;
+					this.position.y = Math.sin(180*this.vitesse.angle/3.14)*this.vitesse.length*dT + this.position.y;
+					this.pathCircle.position = this.position;
+					this.dT = t;
+				}
+				
+			}
+			console.log(littleworld);
+			//console.dir(littleworld);
+		})
+
+		socket.on('newguy', function(aNLP){
+			aNLP.thepoint.position = new Point(aNLP.thepoint.position);
+			aNLP.thepoint.vitesse = new Point(aNLP.thepoint.vitesse);
+			aNLP.thepoint.pathCircle = new Path.Circle(aNLP.thepoint.position, aNLP.thepoint.size);
+			aNLP.thepoint.pathCircle.fillColor = aNLP.thepoint.color;
+
+			aNLP.thepoint.getposition = function(){ 
+				var t = Date.now();  
+				var dT = t - this.dT;
+				//console.log(dT);
+				this.position.x = Math.cos(180*this.vitesse.angle/3.14)*this.vitesse.length*dT + this.position.x;
+				this.position.y = Math.sin(180*this.vitesse.angle/3.14)*this.vitesse.length*dT + this.position.y;
+				this.pathCircle.position = this.position;
+				this.dT = t;
+			}
+			littleworld.set(aNLP.socketid, aNLP.thepoint)
+				
+			
+			console.log(littleworld);
+			//console.dir(littleworld);
+		})
+
+		socket.on('delet', (socketid) => {
+			console.log(socketid);
+			littleworld.get(socketid).pathCircle.remove();
+			littleworld.delete(socketid);
+		})
+
+		view.onFrame = function(event) {
+
+			//console.log("hey?");
+			if(littleworld !== undefined){
+			for (var aNLP of littleworld.values()) {
+				aNLP.getposition();
+				
+				//console.log(aNiceLittlePoint.vitesse.length);
+			}
+		}
+		}
+	}
+    </script>
+		
+	
+</body>
+</html>
+
+

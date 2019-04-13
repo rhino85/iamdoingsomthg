@@ -1,0 +1,45 @@
+#msgInput{
+	position: fixed;
+	left: 35vw;
+    bottom: 5vh;
+    font-size: 20px;
+    margin-top: 5vh;
+    width: 30vw; 
+}
+
+body{
+	margin: 0;
+}
+
+#messages{
+	position: absolute;
+	left: 0px;
+	padding-top: 5vh;
+	padding-left: 35vw;
+	padding-right: 35vw;
+	width: 30vw;
+	height: 80vh;
+	overflow: auto;
+}
+
+#message{
+	margin-bottom: 1vh;
+	font-size: 25px;
+	word-wrap: break-word;
+}
+
+#chien{
+	position: fixed;
+	left: 33vw;
+	padding-bottom: 3px;
+    bottom: 5vh;
+    font-size: 20px;
+    margin-top: 5vh;
+    width: 30vw; 
+}
+
+#canvas{
+	padding: 0;
+	margin: 0;
+
+}

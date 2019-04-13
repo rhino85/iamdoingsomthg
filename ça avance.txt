@@ -1,0 +1,13 @@
+faudra penser à :
+mettre sur server
+	peut être trouver un moyen de maj node et npm sur server ??
+
+gerer la taille de l'écran (système de zoom? boite fermée ? toroide?)
+
+gerer acceleration, leftright qui font chier
+
+gerer nouveau arrivant et depart
+
+gerer colision ça serait trop cool :)
+
+et possibilité d'écrire (genre à l'arrache)
