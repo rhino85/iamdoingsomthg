@@ -26,6 +26,21 @@
 		var tool = new Tool();
 		var socket = io(location.pathname);
 		var messages = new Array();
+		function N(p){
+			var n = Math.random(); 
+			if(n==0){
+				//yes this can happen and it's part of it i guess
+			}
+			n = Math.log(n);      //<3
+			p = Math.round(p);
+			n = (p%2 ? -1 : 1) * Math.pow(n, p);
+			n = n ;//* (1 + 0.5*Math.cos(0.05*bob));
+
+			return n;
+		}
+		function RS(){
+			return Math.random()*2-1;
+		}
 		socket.on('connect', function (ok) {
 			//receive data about other niceLittlePoints (position, color)
 		});
@@ -59,8 +74,9 @@
 			var text = new paper.PointText(new paper.Point(message.position.x, message.position.y));
 				text.justification = 'center';
 				text.fillColor = message.color;
-				text.fontSize = message.size*2;
+				text.fontSize = message.size*3 + 5;
 				text.content = message.character;
+				messages.unshift(text);
 			//console.log(littleworld);
 
 		})
@@ -122,12 +138,20 @@
 
 			//console.log("hey?");
 			if(littleworld !== undefined){
-			for (var aNLP of littleworld.values()) {
-				aNLP.getposition();
-				
-				//console.log(aNiceLittlePoint.vitesse.length);
+				for (var aNLP of littleworld.values()) {
+					aNLP.getposition();
+				}
 			}
-		}
+					messages.forEach(function(word, index){
+					word.fillColor.alpha = word.fillColor.alpha - 0.008;
+					word.fontSize = word.fontSize + RS()*N(0.1);
+					word.position.x= word.position.x + RS()*N(0.1);
+					word.position.y= word.position.y + RS()*N(0.1);
+					if(word.fillColor.alpha <= 0){
+						messages.splice(index, 1);
+						console.log(messages);
+					}
+				})
 		}
 	}
     </script>
