@@ -25,17 +25,20 @@
 		view.translate(view.center);
 		var tool = new Tool();
 		var socket = io(location.pathname);
+		var messages = new Array();
 		socket.on('connect', function (ok) {
 			//receive data about other niceLittlePoints (position, color)
 		});
 
 		
 		tool.onKeyDown = function(event) {
-			socket.emit("keydown", {key: event.key});
+			socket.emit("keydown", {key: event.key,
+									character: event.character});
 	    	return false;
 		}
 		tool.onKeyUp = function(event){
-			socket.emit("keyup", {key: event.key});
+			socket.emit("keyup", {key: event.key,
+									character: event.character});
 	    	return false;
 		}
 
@@ -48,6 +51,20 @@
 			//console.log(littleworld);
 
 		})
+
+		socket.on('letter', function(message){
+
+			console.log(message);
+			
+			var text = new paper.PointText(new paper.Point(message.position.x, message.position.y));
+				text.justification = 'center';
+				text.fillColor = message.color;
+				text.fontSize = message.size*2;
+				text.content = message.character;
+			//console.log(littleworld);
+
+		})
+
 		socket.on('welcomeHereIsTheCurrentStateOfTheWorld', function(message){
 			console.log(message);
 			littleworld = new Map(message.littleworld);

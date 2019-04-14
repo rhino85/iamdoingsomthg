@@ -61,16 +61,21 @@ nsps.handler = function(req, res, next){
 				updatemessage.newposition = socket.hisPoint.position;
 				if (message.key == 'up') {
 	    			socket.hisPoint.vitesse.length = 0.1; //pixel par miliseconde
-	    		}
-	    		if (message.key == 'left' && !socket.hisPoint.keys.left) {
+	    		}else if (message.key == 'left' && !socket.hisPoint.keys.left) {
 
 	    			socket.hisPoint.keys.left = true;
 	        		socket.hisPoint.vitesse.angle = socket.hisPoint.vitesse.angle + 3.14/10;
-	    		}
-	    		if (message.key == 'right' && !socket.hisPoint.keys.right) {
+	    		} else if (message.key == 'right' && !socket.hisPoint.keys.right) {
 
 	    			socket.hisPoint.keys.right = true;
 	    			socket.hisPoint.vitesse.angle = socket.hisPoint.vitesse.angle - 3.14/10;
+	    		} else {
+	    			socketNamespace.emit('letter', {'socketid' : socket.id,  
+	    										'character' : message.character,
+	    										'position' : socket.hisPoint.position,
+	    										'color' : socket.hisPoint.color,
+	    										'size' : socket.hisPoint.size
+	    									});
 	    		}
 
 	    		socketNamespace.emit('update', {'socketid' : socket.id,  
