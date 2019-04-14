@@ -146,7 +146,7 @@ io.on('connection', function(socket){
 });
 
 
-http.listen(8081, 'localhost', function () {
+http.listen(8086, 'localhost', function () {
 
 	console.log('ok');
 
